@@ -1,16 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
-const bcrypt = require('bcrypt');
-const session = require('express-session');
-
+const bcrypt = require("bcrypt");
+const session = require("express-session");
 
 function hashPassword(password) {
   const saltRounds = 10;
   const hash = bcrypt.hashSync(password, saltRounds);
-    return hash;
-};
-
+  return hash;
+}
 
 //Get all users
 router.get("/", async (req, res) => {
@@ -23,31 +21,43 @@ router.get("/", async (req, res) => {
 });
 
 //Get one user
-router.get("/:id", async (req, res) => {
- 
+router.get("/:id", async (req, res, next) => {
   try {
+    /* Await is not redundant the interpreter is being a bitch */
     const user = await User.findById(req.params.id);
     res.json(user);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+  next();
 });
 
 //Get one user
 router.post("/", async (req, res) => {
+  console.log(req.body);
+
   const user = new User({
-    name: req.body.name,
+    name: {
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+    },
     email: req.body.email,
     password: hashPassword(req.body.password),
   });
 
-  console.log(req.body.name)
+  console.log(typeof(user.password))
 
-  try {
-    const newUser = await user.save();
-    res.status(201).json(newUser)
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  if (req.body.password.length >= 11) {
+    try {
+      const newUser = await user.save();
+      res.status(201).json(newUser);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  } else {
+    res.status(400).json(
+      { message: "Bad request, password must be at least 11 characters" 
+    });
   }
 });
 

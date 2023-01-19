@@ -31,7 +31,7 @@ server.use(requestTime);
 server.use(express.json())
 server.use(express.urlencoded({ extended: false}))
 
-const articleRouter = require('./routes/articles');
+const articleRouter = require('./routes/articleRoute');
 const usersRouter = require('./routes/userRoute')
 
 server.use('/api/articles', articleRouter);
