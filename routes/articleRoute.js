@@ -12,6 +12,17 @@ router.get("/", async (req, res) => {
   }
 });
 
+//Search
+router.get("/search/:query?", async (req, res) => {
+  var query = req.params.query;
+  const target = await Article.findOne({ name: query });
+  try {
+    if (target) {
+      res.send({ target });
+    }
+  } catch (err) {}
+});
+
 // define the about route
 router.post("/", async (req, res) => {
   const article = new Article({
@@ -39,7 +50,7 @@ router.put("/:id", async (req, res) => {
     if (!article) {
       return res.status(404).json({ message: "Article not found" });
     }
-    
+
     article.name = req.body.name;
     article.compartments = req.body.compartments;
     article.lioNr = req.body.lioNr;

@@ -8,12 +8,13 @@ const { getAll, postOne } = require("../controllers/userController");
 //Get all users
 router.route("/").get(getAll).post(postOne);
 
+
 //Login
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
-  console.log(req.body)
+  console.log(req.body);
 
   const user = await User.findOne({ email });
 
@@ -21,12 +22,11 @@ router.post('/login', async (req, res) => {
     res.json({
       _id: user.id,
       email: user.email,
-      password: user.password
-    })
+      password: user.password,
+    });
   } else {
-    res.status(400).json({message: "Invalid credentials"});
-  };
-
+    res.status(400).json({ message: "Invalid credentials" });
+  }
 });
 
 //Get one user
