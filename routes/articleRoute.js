@@ -12,15 +12,22 @@ router.get("/", async (req, res) => {
   }
 });
 
-//Search
+//Search by name
 router.get("/search/:query?", async (req, res) => {
   var query = req.params.query;
-  const target = await Article.findOne({ name: query });
+  const resultName = await Article.findOne({ name: query });
+  const resultLio = await Article.findOne({ lioNr: query });
   try {
-    if (target) {
-      res.send({ target });
+    if (resultName) {
+      res.send({ resultName });
+    } else if (resultLio) {
+      res.send({ resultLio });
+    } else {
+      res.json({ message: "Error: No result matched" });
     }
-  } catch (err) {}
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 // define the about route
