@@ -1,23 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
-const bcrypt = require("bcrypt");
 const session = require("express-session");
-
-function hashPassword(password) {
-  const saltRounds = 10;
-  const hash = bcrypt.hashSync(password, saltRounds);
-  return hash;
-}
+const bcrypt = require("bcrypt");
+const { getAll, postOne } = require("../controllers/userController");
 
 //Get all users
-router.get("/", async (req, res) => {
-  try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+router.route("/").get(getAll).post(postOne);
+
+//Login
+router.post('/login', async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  console.log(req.body)
+
+  const user = await User.findOne({ email });
+
+  if (user && bcrypt.compare(password, user.password)) {
+    res.json({
+      _id: user.id,
+      email: user.email,
+      password: user.password
+    })
+  } else {
+    res.status(400).json({message: "Invalid credentials"});
+  };
+
 });
 
 //Get one user
@@ -33,32 +42,6 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //Get one user
-router.post("/", async (req, res) => {
-  console.log(req.body);
-
-  const user = new User({
-    name: {
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-    },
-    email: req.body.email,
-    password: hashPassword(req.body.password),
-  });
-
-
-  if (req.body.password.length >= 11) {
-    try {
-      const newUser = await user.save();
-      res.status(201).json(newUser);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-  } else {
-    res.status(400).json(
-      { message: "Bad request, password must be at least 11 characters" 
-    });
-  }
-});
 
 //Get one user
 router.put("/:id", (req, res) => {

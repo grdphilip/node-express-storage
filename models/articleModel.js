@@ -53,4 +53,5 @@ articleSchema.methods.getId = function () {
 
 
 
+
 module.exports = mongoose.model("Article", articleSchema);
