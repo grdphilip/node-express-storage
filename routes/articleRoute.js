@@ -4,14 +4,6 @@ const Article = require("../models/articleModel");
 
 // define the home page route
 router.get("/", async (req, res) => {
-  const article = new Article({
-    name: req.body.name,
-    lioNr: req.body.lioNr,
-    price: req.body.price,
-    supplier: req.body.supplier,
-  });
-
-  article.sayHi()
 
   try {
     const articles = await Article.find();
@@ -23,16 +15,31 @@ router.get("/", async (req, res) => {
 
 // define the about route
 router.post("/", async (req, res) => {
+
   const article = new Article({
     name: req.body.name,
+    compartments: req.body.compartments,
     lioNr: req.body.lioNr,
     price: req.body.price,
     supplier: req.body.supplier,
   });
 
+  console.log(article)
+
   try {
     const newArticle = await article.save();
     res.status(201).json(newArticle);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+router.put("/:id", async (req, res) => {
+  
+  
+  try {
+    const article = await Article.updateOne(req.params.id)
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

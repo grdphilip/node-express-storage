@@ -2,9 +2,28 @@ POST http://localhost:3000/api/users
 Content-Type: application/json
 
 {
-    "first":"Jo",
-    "last":"kingsson",
-    "email": "somethings@live.se",
-    "password":"something"
+    "firstname":"Jo",
+    "lastname":"kingsson",
+    "email": "somethingsfsefs@live.se",
+    "password":"somethingfesfsef"
+
+}
+
+###
+
+POST http://localhost:3000/api/articles
+Content-Type: application/json
+
+{
+    "name":"Alvedon",
+    "compartments": {
+        "placement": "Fågel",
+        "storageId": "Förty",
+        "qrCode": "hello",
+        "quantity": 10,
+        },
+    "lioNr": "",
+    "price":9,
+    "supplier": "Regionen"
 
 }

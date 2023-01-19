@@ -45,7 +45,6 @@ router.post("/", async (req, res) => {
     password: hashPassword(req.body.password),
   });
 
-  console.log(typeof(user.password))
 
   if (req.body.password.length >= 11) {
     try {

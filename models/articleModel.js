@@ -4,7 +4,24 @@ const mongoose = require("mongoose");
 mongoose docs https://mongoosejs.com/docs/guide.html#methods
 */
 
-const compartmentsSchema = new mongoose.Schema({});
+const compartmentsSchema = new mongoose.Schema({
+  placement:{
+    type: String,
+    required: true,
+  },
+  storageId:{
+    type: String,
+    required: true,
+  },
+  qrCode:{
+    type: String,
+    required: true,
+  },
+  quantity:{
+    type: Number,
+    required: true,
+  },
+});
 
 const articleSchema = new mongoose.Schema(
   {
@@ -12,13 +29,14 @@ const articleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    compartments: [compartmentsSchema],
     lioNr: {
       type: String,
       unique: true,
       required: true,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
     },
     supplier: {
@@ -33,6 +51,6 @@ articleSchema.methods.getId = function () {
   console.log(this);
 };
 
-articleSchema.vi;
+
 
 module.exports = mongoose.model("Article", articleSchema);
