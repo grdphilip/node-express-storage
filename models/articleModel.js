@@ -1,7 +1,13 @@
 const mongoose = require("mongoose");
+const User = require("../models/userModel");
 
 /* min, max, minLength, required, unique, validate {}
 mongoose docs https://mongoosejs.com/docs/guide.html#methods
+
+Adding a schema_version means that an application can identify 
+documents shaped for the new schema and handle them accordingly. 
+The application can still handle old documents if schema_version 
+does not exist on the document.
 */
 
 const compartmentsSchema = new mongoose.Schema({

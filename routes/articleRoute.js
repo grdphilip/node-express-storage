@@ -2,6 +2,11 @@ const express = require("express");
 const router = express.Router();
 const Article = require("../models/articleModel");
 
+/* 
+Den verkar kalla på funktionen som ligger högst upp
+vid konflikting URL.  
+*/
+
 // define the home page route
 router.get("/", async (req, res) => {
   try {
@@ -17,17 +22,24 @@ router.get("/search/:query?", async (req, res) => {
   var query = req.params.query;
   const resultName = await Article.findOne({ name: query });
   const resultLio = await Article.findOne({ lioNr: query });
+  console.log("Kallad på name")
   try {
     if (resultName) {
       res.send({ resultName });
     } else if (resultLio) {
       res.send({ resultLio });
     } else {
-      res.json({ message: "Error: No result matched" });
+      res.status(404).json({message : "ERR: No matching results"})
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+});
+
+router.get("/search/:query?", async (req, res) => {
+  var query = req.params.query;
+  const article = await Article.find().where('name').equals(query)
+  res.send(article)
 });
 
 // define the about route

@@ -4,19 +4,19 @@ const User = require("../models/userModel");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
 const { getAll, postOne } = require("../controllers/userController");
+const { authorizeUsersAccess } = require("../middleware/middleware")
 
 //Get all users
 router.route("/").get(getAll).post(postOne);
 
 
 //Login
-router.post("/login", async (req, res) => {
+router.post("/login", authorizeUsersAccess ,async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-
-  console.log(req.body);
-
+  
   const user = await User.findOne({ email });
+  console.log(user)
 
   if (user && bcrypt.compare(password, user.password)) {
     res.json({
