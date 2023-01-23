@@ -5,6 +5,7 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 const { getAll, postOne } = require("../controllers/userController");
 const { authorizeUsersAccess } = require("../middleware/middleware")
+const jwt = require("jsonwebtoken");
 
 //Get all users
 router.route("/").get(getAll).post(postOne);
@@ -14,20 +15,26 @@ router.route("/").get(getAll).post(postOne);
 router.post("/login", authorizeUsersAccess ,async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  
+
   const user = await User.findOne({ email });
-  console.log(user)
 
   if (user && bcrypt.compare(password, user.password)) {
     res.json({
       _id: user.id,
       email: user.email,
       password: user.password,
+      token: generateToken(user._id),
     });
   } else {
     res.status(400).json({ message: "Invalid credentials" });
   }
 });
+
+const generateToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    })};
+
 
 //Get one user
 router.get("/:id", async (req, res, next) => {

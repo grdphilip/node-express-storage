@@ -46,6 +46,4 @@ userSchema.methods.present = function() {
     console.log(this)
 }
 
-userSchema.
-
 module.exports = mongoose.model('User', userSchema)
